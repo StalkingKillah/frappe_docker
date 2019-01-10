@@ -3,8 +3,7 @@ services:
   mariadb:
     image: mariadb
     environment:
-      - MYSQL_ROOT_PASSWORD=123
-      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=FASTDOORappleforget
     volumes:
       - ./conf/mariadb-conf.d:/etc/mysql/conf.d
       - /var/lib/mysql

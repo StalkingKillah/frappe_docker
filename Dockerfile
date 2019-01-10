@@ -32,3 +32,17 @@ RUN pip install -e bench-repo && rm -rf ~/.cache/pip \
 
 USER frappe
 WORKDIR /home/frappe/frappe-bench
+
+RUN bench init frappe-bench --ignore-exist --skip-redis-config-generation
+COPY frappe-bench/Procfile Procfile
+COPY frappe-bench/sites/common_site_config.json sites/common_site_config.json
+COPY redis-conf/redis_cache.conf config/redis_cache.conf
+COPY redis-conf/redis_queue.conf config/redis_queue.conf
+COPY redis-conf/redis_socketio.conf config/redis_socketio.conf
+RUN bench set-mariadb-host mariadb
+# RUN bench new-site site1.local
+# COPY frappe-bench/add_sites.sh add_sites.sh
+# RUN chmod +x add_sites
+# USER root
+# RUN ./add_sites
+# USER frappe
