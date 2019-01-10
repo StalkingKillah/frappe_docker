@@ -2,24 +2,12 @@
 
 if [[ $# -eq 0 ]]; then
     docker exec -it frappe bash
-elif [ "$1" == 'init' ]; then
-    docker exec -itu root frappe bash -c "cd /home/frappe && chown -R frappe:frappe ./*"
-    docker exec -i frappe bash -c "cd .. && bench init frappe-bench --ignore-exist --skip-redis-config-generation && cd frappe-bench"
-    docker exec -i frappe bash -c "mv Procfile_docker Procfile && mv sites/common_site_config_docker.json sites/common_site_config.json && bench set-mariadb-host mariadb"
 elif [ "$1" == 'setup' ] && [ "$2" == 'docker' ]; then
         if [ "$3" == '--swarm-mode' ]; then
             echo "Docker swarm mode is not currently supported"
         else
             docker-compose up -d
         fi
-elif [ "$1" == 'setup' ] && [ "$2" == 'hosts' ]; then
-        a=$(cd frappe-bench && ls sites/*/site_config.json | grep -o '/.\+/')
-        a="${a//$'\n'/ }"
-        a=$(echo $a | tr -d / )
-        result="127.0.0.1 ${a}"
-        echo $result | sudo tee -a /etc/hosts
-        docker exec -iu root frappe bash -c "echo ${result} | tee --append /etc/hosts"
-        docker exec -itu root frappe bash -c "printf '# User rules for frappe\nfrappe ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/frappe"
 elif [ "$1" == '-c' ]; then
     shift
     user=$1
@@ -32,12 +20,8 @@ elif [ "$1" == '-h' ]; then
     echo "Usage:"
     echo "    $0"
     echo "                Launches you into an interactive shell in the container as user frappe"
-    echo "    $0 init bench-folder-name"
-    echo "                Runs \"bench init\" along with some other commands"
     echo "    $0 setup docker"
     echo "                Starts and builds the docker containers using \"docker-compose up -d\""
-    echo "    $0 setup hosts"
-    echo "                Adds all sites to the hosts file, run with sudo"
     echo "    $0 -c frappe | root <command to run>"
     echo "                Runs a command in the container, as the selected user"
     echo "    $0 -h"

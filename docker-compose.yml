@@ -13,38 +13,27 @@ services:
 
   redis-cache:
     image: redis:alpine
-
     volumes:
       - ./redis-conf:/etc/conf.d
-
     command: ["redis-server","/etc/conf.d/redis_cache.conf"]
-
     container_name: redis-cache
 
   redis-queue:
     image: redis:alpine
-
     volumes:
       - ./redis-conf:/etc/conf.d
-
     command: ["redis-server","/etc/conf.d/redis_queue.conf"]
-
     container_name: redis-queue
 
   redis-socketio:
     image: redis:alpine
-
     volumes:
       - ./redis-conf:/etc/conf.d
-
     command: ["redis-server","/etc/conf.d/redis_socketio.conf"]
-
     container_name: redis-socketio
-
 
   frappe:
     volumes:
-      - ./frappe-bench:/home/frappe/frappe-bench
       - ./redis-conf/redis_cache.conf:/home/frappe/frappe-bench/config/redis_cache.conf
       - ./redis-conf/redis_queue.conf:/home/frappe/frappe-bench/config/redis_queue.conf
       - ./redis-conf/redis_socketio.conf:/home/frappe/frappe-bench/config/redis_socketio.conf
